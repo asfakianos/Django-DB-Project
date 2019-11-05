@@ -8,7 +8,7 @@ from .models import Item
 def index(request):
 	return HttpResponse("Home.")
 
-def product_page(request, name):
+def product_page(request, product_name):
 	try:
 		item = Items.objects.get(name=name)
 		print("Issue with finding object with name {}", name)
