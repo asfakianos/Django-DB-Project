@@ -15,8 +15,18 @@ class Item(models.Model):
 	price = models.DecimalField(max_digits=6, decimal_places=2)
 	# We don't define a primary key bc we can let django do it automatically.
 
+	def add_item(self, name, price, brand):
+		if type(brand) == str:
+			brand = Brand.objects.get(name=brand)
+		else:
+			# Create Item and save
+			new_item = Item.objects.create(name=name, price=price, 
+					                       brand=brand)
+			new_item.save()
+
+
 	def __str__(self):
-		return self.name
+		return self.name + 'from ' self.brand.name
 
 
 # Model for User if we need custom add-ons (we should bc + 1 table)
