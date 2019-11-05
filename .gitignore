@@ -1,2 +1,2 @@
 db_proj/db.sqlite3
-db_proj/db_proj/__pycache__/*
+__pycache__/*
