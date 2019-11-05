@@ -1,43 +1,27 @@
 from django.db import models
 
-# Create your models here.
-
 
 # We'll make models here, and have a separate module that populates dbs when necessary
 # Model for each item that we'd feature
-class Item(models.Model):
-	# Brand as foreign key
-	brand = models.ForeignKey(
-		'Brand',
-		on_delete=models.CASCADE
-	)
-	name = models.CharField(max_length=30)
-	price = models.DecimalField(max_digits=6, decimal_places=2)
-	# We don't define a primary key bc we can let django do it automatically.
+class Course(models.Model):
+	course_id # CharField, pkey
+	prereqs # Foreign Key, can be removed if too difficult/finicky
+	dept # Foreign Key
+	units # Foreign Key
+	name # CharField
 
-	def add_item(self, name, price, brand):
-		if type(brand) == str:
-			brand = Brand.objects.get(name=brand)
-		else:
-			# Create Item and save
-			new_item = Item.objects.create(name=name, price=price, 
-					                       brand=brand)
-			new_item.save()
+# It doesn't look like we can get the courses taught be this professor
+class Instructor(models.Model):
+	name # CharField
+	dept #CharField
 
+class Department(models.Model):
+	name # CharField
+	address #CharField
+	school #ForeignKey
 
-	def __str__(self):
-		return self.name + 'from ' self.brand.name
+class School(models.Model):
+	name #CharField
 
-
-# Model for User if we need custom add-ons (we should bc + 1 table)
-
-# Model for sets of items/types.
-class Brand(models.Model):
-	# Might end up using name as a primary key...
-	name = models.CharField(max_length=30)
-	# We can add in anything else we want to know about the Brands.
-
-	def __str__(self):
-		return self.name
-
-# Other bullshit models
+# class Student(models.Model):
+# probably modified user model
