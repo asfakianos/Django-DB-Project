@@ -3,10 +3,12 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import generic
 
-from .models import Item, Brand#, User
+from .models import *
 
 # It'd probably be a good goal to display all of the info that we can get in our db in some way...
 
+# infinite scroll for data display on search
+# https://simpleisbetterthancomplex.com/tutorial/2017/03/13/how-to-create-infinite-scroll-with-django.html
 
 # Create your views here.
 def index(request):
@@ -14,17 +16,17 @@ def index(request):
 	# Rewrite this to just be a search that calls a query to generate the product list view
 
 
-def product_page(request, product_name):
-	try:
-		item = Items.objects.get(name=name)
-		print("Issue with finding object with name {}", name)
-	except:
-		all_items = Items.objects.all()
-		for i in all_items:
-			if i.contains(name):
-				item = i
-				break
-	return HttpResponse("E")
+# def course_page(request, product_name):
+# 	try:
+# 		item = Items.objects.get(name=name)
+# 		print("Issue with finding object with name {}", name)
+# 	except:
+# 		all_items = Items.objects.all()
+# 		for i in all_items:
+# 			if i.contains(name):
+# 				item = i
+# 				break
+# 	return HttpResponse("E")
 
 
 # See https://github.com/CWRU-Connected-Devices/connected-devices-spring19/blob/master/Web/lampisite/lampi/templates/lampi/index.html
@@ -56,3 +58,10 @@ class UserView(generic.ListView):
 		# If we can't find the mentioned user, 404
 		# context['user'] = get_object_or_404(User, ..)
 		return context	
+
+
+class DepartmentView(generic.ListView):
+	template_name = ''
+
+class InstructorView(generic.ListView):
+	template_name = ''
