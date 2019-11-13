@@ -7,7 +7,7 @@ def validate_credit_hours(n):
 	# The only case I found where the hours are outside of this range are for EECS600 (1-18)
 	if n < 1 or n > 4:
 		raise ValidationError(
-			_('%(n)s is not a usual number of credit hours'),
+			('%(n)s is not a usual number of credit hours'),
 			params={'value': n})
 
 
@@ -26,7 +26,7 @@ class Course(models.Model):
 		'Instructor',
 		null=True,
 		on_delete = models.SET_NULL
-	) 
+	)
 
 
 # It doesn't look like we can get the courses taught be this professor
