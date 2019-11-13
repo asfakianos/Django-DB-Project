@@ -1,0 +1,12 @@
+{% extends 'scraper/base.html' %}
+
+
+{% if course_list %}
+<ul>
+{% for course in course_list %}
+<li>
+	{{ course.course_id }}
+</li>
+{% endfor %}
+</ul>
+{% endif %}

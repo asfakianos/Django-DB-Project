@@ -1,5 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+
+def validate_credit_hours(n):
+	# The only case I found where the hours are outside of this range are for EECS600 (1-18)
+	if n < 1 or n > 4:
+		raise ValidationError(
+			_('%(n)s is not a usual number of credit hours'),
+			params={'value': n})
+
 
 # We'll make models here, and have a separate module that populates dbs when necessary
 # Model for each item that we'd feature
@@ -10,7 +20,7 @@ class Course(models.Model):
 		'Department',
 		on_delete=models.PROTECT # We don't want to lose a department since we know every class has a dpt.
 	)
-	units = models.IntegerField() # Look into Min/MaxValueValidators for this
+	units = models.IntegerField(validators=[validate_credit_hours]) # Look into Min/MaxValueValidators for this
 	name = models.CharField(max_length=100)
 	instructor = models.ForeignKey(
 		'Instructor',
@@ -52,3 +62,5 @@ class School(models.Model):
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	watched_classes = models.ManyToManyField('Course')
+
+

@@ -3,7 +3,7 @@ import requests
 
 from scraper.models import *
 from django.contrib.auth.models import User
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
 class Command(BaseCommand):
@@ -11,3 +11,15 @@ class Command(BaseCommand):
 
 	def _scrape_from_site(self):
 		pass
+
+	# If we have any optional arguments to add, put them here.
+	def add_arguments(self, parser):
+		pass
+		# e.g.
+		# parser.add_argument('--NAME', action='ACTION', help='HELP_TEXT')
+
+
+	def handle(self, *kwargs, **options):
+		data = self._scrape_from_site()
+		# Add data to existing models if they don't exist already
+		# Objects.add(DATA)

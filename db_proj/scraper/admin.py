@@ -2,4 +2,7 @@ from django.contrib import admin
 from .models import *
 
 # Register your models here.
-# admin.site.register(Item, Brand)
+# class CourseAdmin(admin.ModelAdmin):
+# 	list_display = ('course_id', 'units', 'name', 'instructor', 'dept')
+
+# admin.site.register(Course, CourseAdmin)
