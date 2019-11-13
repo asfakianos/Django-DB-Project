@@ -1,0 +1,18 @@
+.top-right {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.gallery {
+    margin: 2vh 2vw 2vh 2vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+}
+
+.gallery .card {
+    width: 20vw;
+    margin: 2vh 2vw 2vh 2vw;
+}

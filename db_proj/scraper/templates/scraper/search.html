@@ -1,0 +1,41 @@
+{% extends 'scraper/base.html' %}
+
+{% block title %}Course finder{% endblock %}
+
+
+{% block content %}
+<div class='card'>
+</div>
+
+<div class='jumbotron' style="height: 100vh;">
+	<!-- Shift this to ~mid -->
+
+	<form action="{% url 'course_search' %}" method='get' style='position: relative; width: 93%; padding-top: 10%'>
+		<div class='form-row' style='padding-bottom: 2vh;'>
+			<input type='text' name='cname' class='form-control form-control-lg' placeholder="Name a class...">
+		</div>
+		<!-- Break this up a little more and consider multiple rows -->
+		<div class='form-row'>
+			<div class='col-md-4'>
+				<label for='cid'>Course ID</label>
+				<input type='text' name='course_id' class='form-control' id='course_id_in' placeholder="XXXX###">
+			</div>
+			<div class='col-md-4'>
+				<label for='hr'>Credits</label>
+				<input type="text" name='units' class="form-control" in='units_in' placeholder="4">
+			</div>
+		</div>
+		<div class='form-row'>
+			<div class='col'>
+				<label for='in'>Instructor</label>
+				<input type="text" name='instructor' class="form-control col-sm" in='instructor_in' placeholder="Alex">
+			</div>
+			<div class='col'>
+				<label for='dept'>Department</label>
+				<input type="text" name='dept' class="form-control col-sm" id='dept_in' placeholder="Computer Science">
+			</div>
+		</div>
+		<button type='submit' class='btn-lg btn-primary' style="align-content: center; margin-top: 1%; z-index: '1';">Search</button>
+	</form>
+</div>
+{% endblock %}
