@@ -26,7 +26,7 @@ class Course(models.Model):
 		'Instructor',
 		null=True,
 		on_delete = models.SET_NULL
-	)
+	) 
 
 
 # It doesn't look like we can get the courses taught be this professor
@@ -40,7 +40,7 @@ class Instructor(models.Model):
 	)
 	title = models.CharField(max_length=30)
 	# I'm not entirely sure how long these can be. Obviously, ours are 5-6 chars, but if we can't find those for all teachers, we'll end up using their first.last
-	email_id = models.CharField(max_length=20, primary_key=True) 
+	email_id = models.CharField(max_length=20, primary_key=True)
 
 
 class Department(models.Model):
@@ -62,5 +62,3 @@ class School(models.Model):
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	watched_classes = models.ManyToManyField('Course')
-
-
