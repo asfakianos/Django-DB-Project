@@ -20,6 +20,15 @@
 				</div>
 			{% endfor %}
 			</div>
+		{% else %}
+		<div id='failure'>
+			<h1>
+				It looks like your query might've been too specific...
+			</h1>
+			<p>
+				Or we might've messed up.<br><a href="{% url 'index' %}" class='btn btn-outline-info'>Try again?</a>
+			</p>
+		</div>
 		{% endif %}
 </div>
 {% endblock %}

@@ -42,20 +42,15 @@ class CourseListView(generic.ListView):
 	def get_queryset(self):
 		query = self.request.GET
 		# Expected values to return:
-		# cname, cin, dept, in, hr all as string direct map to model for Course
+		# 'cname': name, 'course_id': course_id, 'units': units, 'instructor': instructor, 'dept': dept
 		print(query)
-		return Course.objects.all()
-		# try:
-		# 	# Apply a regex to determine what type of search we're getting on course info:
-		# 	search_terms = re.compile("^[a-zA-Z]{3,4}\\s*[0-9]{3}").findall(search_query)
-		# 	if search_terms:
-		# 		return Course.objects.filter(course_id__icontains=search_terms[0])
-		# 	# Otherwise, check course title for all of the items in query
-		# 	else:
-		# 		return Course.objects.filter(name__icontains=search_query)
-		# 	pass
-		# except:
-		# 	return Course.objects.all()
+		units = 0 if query['units'] == '' else int(query['units'])
+		return Course.objects.filter(course_id__icontains=query['course_id'], 
+									 units=units,
+									 name__icontains=query['cname'],
+									 instructor__name__icontains=query['instructor'],
+									 dept__name__icontains=query['dept']
+									 )
 
 
 class UserView(generic.ListView):
