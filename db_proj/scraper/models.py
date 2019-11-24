@@ -7,7 +7,7 @@ def validate_credit_hours(n):
 	# The only case I found where the hours are outside of this range are for EECS600 (1-18)
 	if n < 1 or n > 4:
 		raise ValidationError(
-			_('%(n)s is not a usual number of credit hours'),
+			('%(n)s is not a usual number of credit hours'),
 			params={'value': n})
 
 
@@ -84,5 +84,3 @@ class Profile(models.Model):
 
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	watched_classes = models.ManyToManyField('Course')
-
-
