@@ -1,0 +1,20 @@
+{% extends 'scraper/base.html' %}
+
+{% if query_set %}
+
+	{% block title %}'s Courses{% endblock %}
+
+	{% block content %}
+		{% for item in class_list %}
+		{% block list_operation %}{% endblock %}
+		{% endfor %}
+	{% endblock %}
+
+{% else %}
+	{% block title %}Instructor not found{% endblock %}
+
+	{% block content %}
+	{% block failure_op %}{% endblock %}
+	{% endblock %}
+
+{% endif %}
