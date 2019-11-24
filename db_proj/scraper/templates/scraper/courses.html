@@ -1,12 +1,25 @@
 {% extends 'scraper/base.html' %}
 
+{% block nav_content %}
+	<div>
+		<a href="{% url 'index'%}" class='text-info'>&#8592; Back to Search</a>
+	</div>
+{% endblock %}
 
-{% if course_list %}
-<ul>
-{% for course in course_list %}
-<li>
-	{{ course.course_id }}
-</li>
-{% endfor %}
-</ul>
-{% endif %}
+{% block content %}
+	<div class='p-2'>
+		{% if course_list %}
+			<div id='course_gallery' class='d-flex flex-wrap align-content-around'>
+			{% for course in course_list %}
+				<div class='card text-white bg-dark mb-3' style='width: 20vw;'>
+				  <div class="card-header">{{ course.course_id }} - {{ course.units }} credit hours</div>
+				  <div class="card-body">
+				    <h5 class="card-title">(Title goes here)</h5>
+				    <p class="card-text">{{ course.instructor.name }} (Instructor name and anything else we want)</p>
+				  </div>
+				</div>
+			{% endfor %}
+			</div>
+		{% endif %}
+</div>
+{% endblock %}

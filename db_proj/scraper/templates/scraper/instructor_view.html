@@ -1,0 +1,24 @@
+{% extends 'scraper/base.html' %}
+
+{% if class_list %}
+
+	{% block title %}'s Courses{% endblock %}
+
+	{% block content %}
+		{% for class in class_list %}
+		<div>
+			{{ class.name }}
+		</div>
+		{% endfor %}
+	{% endblock %}
+
+{% else %}
+	{% block title %}Instructor not found{% endblock %}
+
+	{% block content %}
+	<div>
+		This instructor couldn't be found. Either you spelled the name incorrectly, or that instructor hasn't been added yet.
+	</div>
+	{% endblock %}
+
+{% endif %}
