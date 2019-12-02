@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.conf import settings
-from .models import *
+from . import models
 
 class NewUserForm(forms.Form):
 	# Fields here...
@@ -13,3 +13,14 @@ class NewUserForm(forms.Form):
 		# field = cleaned_data.get('field')
 		# if...
 		# else raise validationerror
+
+
+class CourseReviewForm(forms.Form):
+	review_text = forms.CharField(widget=forms.TextArea)
+
+	def clean(self):
+		cleaned_data = super().clean()
+		print(cleaned_data)
+
+		# Eventually:
+		# Review.objects new
