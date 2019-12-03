@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 def validate_credit_hours(n):
 	# The only case I found where the hours are outside of this range are for EECS600 (1-18)
-	if n < 1 or n > 4:
+	if n < 1 or n > 20:
 		raise ValidationError(
 			('%(n)s is not a usual number of credit hours'),
 			params={'value': n})

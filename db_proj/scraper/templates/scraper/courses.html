@@ -11,11 +11,11 @@
 		{% if course_list %}
 			<div id='course_gallery' class='d-flex flex-wrap align-content-around'>
 			{% for course in course_list %}
-				<div class='card text-white bg-dark mb-3' style='width: 20vw;'>
-				  <div class="card-header">{{ course.course_id }} - {{ course.units }} credit hours</div>
-				  <div class="card-body">
-				    <h5 class="card-title">(Title goes here)</h5>
-				    <p class="card-text">{{ course.instructor.name }} (Instructor name and anything else we want)</p>
+				<div class='card text-white bg-dark mb-3' style='width: 30vw; margin: 1vh 1vw 1vh 1vw'>
+				  <div class="card-header" style='height: 5vh; overflow: hidden;'>{{ course.name }}</div>
+				  <div class="card-body" style='height: 20vh; overflow: scroll;'>
+				    <h5 class="card-title">Taught by {{ course.instructor.name }}</h5>
+				    <p class="card-text">{{ course.course_id }} - {{ course.units }} credit hours</p>
 				  </div>
 				</div>
 			{% endfor %}
