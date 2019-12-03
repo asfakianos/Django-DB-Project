@@ -49,6 +49,7 @@ class Instructor(models.Model):
 		default=DEFAULT_DEPT,
 		on_delete=models.SET_DEFAULT
 	)
+	rating = models.DecimalField(default=5.0, max_digits=3, decimal_places=2)
 
 	# def __str__(self):
 	# 	return f"{self.case_id} {self.name}"
@@ -82,7 +83,6 @@ class School(models.Model):
 
 # Extension of user model to build on favorites of classes, etc.
 class Profile(models.Model):
-
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	watched_classes = models.ManyToManyField('Course')
 
@@ -90,6 +90,7 @@ class Profile(models.Model):
 # A course can have one or multiple sections
 class Section(models.Model):
 	section_num = models.IntegerField(default=100)
+	meeting_times = models.CharField(max_length=30, null=True)
 	course = models.ForeignKey(
 		'Course',
 		on_delete=models.CASCADE
@@ -98,7 +99,7 @@ class Section(models.Model):
 
 class Review(models.Model):
 	description = models.TextField()
-	submitted = models.DateTimeField(auto_now_add=True)
+	added_at = models.DateTimeField('Created time', auto_now_add=True, null=True)
 	course = models.ForeignKey(
 		'Course',
 		on_delete=models.CASCADE

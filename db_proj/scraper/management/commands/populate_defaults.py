@@ -12,8 +12,12 @@ class Command(BaseCommand):
 		d = Department(name='DEFAULT', school=s)
 		i = Instructor(case_id='DEFAULT', name='DEFAULT', dept=d)
 		c = Course(course_id='DEFAULT', dept=d, units=3, name='DEFAULT', instructor=i)
+		r = Review(description='DEFAULT DEFAULT DESC', course=c)
+		se = Section(section_num=101, course=c)
 		
 		s.save()
 		d.save()
 		i.save()
 		c.save()
+		r.save()
+		se.save()

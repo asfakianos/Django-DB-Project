@@ -16,7 +16,7 @@ class NewUserForm(forms.Form):
 
 
 class CourseReviewForm(forms.Form):
-	review_text = forms.CharField(widget=forms.TextArea)
+	review_text = forms.CharField(widget=forms.Textarea)
 
 	def clean(self):
 		cleaned_data = super().clean()

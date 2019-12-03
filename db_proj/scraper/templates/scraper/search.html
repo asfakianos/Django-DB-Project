@@ -7,9 +7,12 @@
 <div class='card'>
 </div>
 
-<div class='jumbotron' style="height: 100vh;">
+<!-- For normal Queries/Searches (No complex queries, just basic SELECT FROM WHERE) -->
+<div class='jumbotron' style="height: 100vh; margin-bottom: 0px;">
 	<!-- Shift this to ~mid -->
 
+	<span class='mb-0 h2 text-info'>Basic Search</span><br>
+	<span class='mb-0 h5 text-info' style='width: fill;'>Scroll Down for Custom Queries</span>
 	<form action="{% url 'course_search' %}" method='get' style='position: relative; width: 93%; padding-top: 10%'>
 		<div class='form-row' style='padding-bottom: 2vh;'>
 			<input type='text' name='cname' class='form-control form-control-lg' placeholder="Name a class...">
@@ -38,4 +41,23 @@
 		<button type='submit' class='btn-lg btn-primary' style="align-content: center; margin-top: 1%; z-index: '1';">Search</button>
 	</form>
 </div>
+<!-- For custom Queries/Searches (Accepts RAW SQL)-->
+<hr style='margin: 0'>
+<div class='jumbotron' style="height: 100vh; margin-top: 0px;">
+	<span class='mb-0 h2 text-info'>Custom SQL Queries</span><br>
+	<span class='mb-0 h5 text-info' style='width: fill;'>Tables are COURSE, INSTRUCTOR, DEPARTMENT, SCHOOL, SECTION, REVIEW. <br>As the intention is to find courses, the SELECT field automatically gets only COURSE attributes.</span>
+	<!-- Should add a modal here to view all table info that someone might want to make a query. -->
+	<form action="{% url 'custom_sql' %}" id='custom_form' method='get' style='position: relative; width: 93%; padding-top: 10%'>
+		<div class='form-row' style='width: fill;'>
+			<textarea class='form-control' name='query' form='custom_form' style='width: 90%; height: 30vh'>SELECT COURSE</textarea>
+		</div>
+		<div class='form-row'>
+			<button type='submit' class='btn-lg btn-primary' style="align-content: center; margin-top: 1%; z-index: '1';">
+				Search
+			</button>
+		</div>
+	</form>
+</div>
+
+
 {% endblock %}

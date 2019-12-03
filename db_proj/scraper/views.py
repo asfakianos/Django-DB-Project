@@ -9,6 +9,8 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
+import re
+
 from .forms import *
 from .models import *
 
@@ -140,12 +142,35 @@ class CourseView(ListView, FormMixin):
 	def get_queryset(self):
 		return Review.objects.all()
 
+	def get_context_data(self, *args, **kwargs):
+		context = super(CourseView, self).get_context_data(*args, **kwargs)
+		context['slug'] = self.kwargs['slug'] # Use this to find specific user
+		print(Course.objects.filter(course_id=context['slug']))
+		return context
 
-	# def get_context_data(self, *args, **kwargs):
-	# 	context = super(CourseView, self).get_context_data(*args, **kwargs)
-	# 	context['slug'] = self.kwargs['slug'] # Use this to find specific user
-	# 	print(context)
-	# 	return context
+
+class CustomView(ListView):
+	template_name='scraper/courses.html'
+
+	def get_queryset(self):
+		query = self.request.GET
+		print(query['query']) # DEBUG
+		# Our query set should be received from raw sql!!!
+		sql_query = "SELECT course_id, units, name " + self._prepare_sql_query(query['query'])
+		print(sql_query)
+		return Course.objects.raw(sql_query)
 
 
+	def _prepare_sql_query(self, base_query):
+		# We have to replace all of these instances with "scraper_lowercaseversion"
+		regex_list = ['(?i)course[a-zA-Z|\\s]', '(?i)instructor[a-zA-Z|\\s]', 
+					  '(?i)department[a-zA-Z|\\s]', '(?i)school[a-zA-Z|\\s]', 
+					  '(?i)section[a-zA-Z|\\s]', '(?i)review[a-zA-Z|\\s]']
+		table_list = ['scraper_course', 'scraper_instructor', 'scraper_department', 
+					  'scraper_school', 'scraper_section', 'scraper_review']
+
+		for i in range(len(regex_list)):
+			base_query = re.sub(regex_list[i], table_list[i], base_query)
+
+		return base_query
 
