@@ -1,0 +1,23 @@
+{% extends 'scraper/base.html' %}
+
+
+{% block title %}{{ course.course_id }} View{% endblock %}
+
+{% block content %}
+{{ course.course_id }}
+{{ course.name }}
+
+{% if review_list %}
+	{% for review in review_list %}
+		<div class='card'>
+			{{ review.added_at }}
+			{{ review.description }}
+			}
+		</div>
+		{% endfor %}
+{% endif %}
+
+
+{{ form.as_p }}
+
+{% endblock %}
