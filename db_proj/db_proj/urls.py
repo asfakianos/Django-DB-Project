@@ -5,7 +5,7 @@ from django.views.generic.base import RedirectView
 from django.conf import settings
 
 # from .views import *
-# from . import views
+from . import views
 
 
 # template_name='scraper/login.html'
@@ -13,5 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('', include('scraper.urls')),
-    # path('logout/', logout_redirect, name='logout'),
+	path('logout/', views.logout_redirect, name='logout'),
 ]
+
+

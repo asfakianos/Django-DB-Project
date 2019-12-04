@@ -51,8 +51,8 @@ class Instructor(models.Model):
 	)
 	rating = models.DecimalField(default=5.0, max_digits=3, decimal_places=2)
 
-	# def __str__(self):
-	# 	return f"{self.case_id} {self.name}"
+	def __str__(self):
+		return f"{self.case_id} {self.name} from {self.dept.name}"
 	# Potentially add RateMyProfessor as a separate model or in this.
 	# Once data is added to this, then Phil can go back through and automate case_id for instructors. 
 	# I'm not entirely sure how long these can be. Obviously, ours are 5-6 chars, but if we can't find those for all teachers, we'll end up using their first.last

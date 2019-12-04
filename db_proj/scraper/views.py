@@ -169,6 +169,7 @@ class CustomView(ListView):
 		
 
 
+	# Likely just going to let this through and assume the user inputs proper sql
 	def _prepare_sql_query(self, base_query):
 		# We have to replace all of these instances with "scraper_lowercaseversion"
 		# regex_list = ['(?i)course[a-zA-Z|\\s]', '(?i)instructor[a-zA-Z|\\s]', 
