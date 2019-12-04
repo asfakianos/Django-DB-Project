@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 
 def validate_credit_hours(n):
 	# The only case I found where the hours are outside of this range are for EECS600 (1-18)
-	if n < 1 or n > 4:
+	if n < 1 or n > 20:
 		raise ValidationError(
 			('%(n)s is not a usual number of credit hours'),
 			params={'value': n})
@@ -51,8 +51,8 @@ class Instructor(models.Model):
 	)
 	rating = models.DecimalField(default=5.0, max_digits=3, decimal_places=2)
 
-	# def __str__(self):
-	# 	return f"{self.case_id} {self.name}"
+	def __str__(self):
+		return f"{self.case_id} {self.name} from {self.dept.name}"
 	# Potentially add RateMyProfessor as a separate model or in this.
 	# Once data is added to this, then Phil can go back through and automate case_id for instructors. 
 	# I'm not entirely sure how long these can be. Obviously, ours are 5-6 chars, but if we can't find those for all teachers, we'll end up using their first.last

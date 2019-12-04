@@ -1,4 +1,4 @@
-# from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -14,8 +14,6 @@ import re
 from .forms import *
 from .models import *
 
-# We need to check dictionary key existence before we attempt to do anything...
-# If it doesn't exist, let's just create and fill it with a default value ('' or 0)
 
 # It'd probably be a good goal to display all of the info that we can get in our db in some way...
 
@@ -135,18 +133,23 @@ class InstructorView(ListView):
 
 # Form for writing/submitting reviews
 # Render a form as well as class info.
-class CourseView(ListView, FormMixin):
-	template_name='scraper/base.html'
-	form_class = CourseReviewForm
+class CourseView(ListView, SingleObjectMixin):
+	template_name='scraper/course_view.html'
+	# form_class = CourseReviewForm
 
-	def get_queryset(self):
-		return Review.objects.all()
-
-	def get_context_data(self, *args, **kwargs):
-		context = super(CourseView, self).get_context_data(*args, **kwargs)
-		context['slug'] = self.kwargs['slug'] # Use this to find specific user
-		print(Course.objects.filter(course_id=context['slug']))
+	def get_context_data(self, **kwargs):
+		# context = super(CourseView, self).get_context_data(**kwargs)
+		 # Use this to find specific course and pass to context
+		context = {}
+		context['course'] = Course.objects.get(course_id=self.kwargs['slug'])
+		context['form'] = CourseReviewForm()
+		print(context)
 		return context
+
+
+	def get_queryset(self, **kwargs):
+		print("QUERY TIME")
+		return Review.objects.filter(course__course_id=Course.objects.get(course_id=self.kwargs['slug']).course_id)		
 
 
 class CustomView(ListView):
@@ -154,23 +157,30 @@ class CustomView(ListView):
 
 	def get_queryset(self):
 		query = self.request.GET
-		print(query['query']) # DEBUG
 		# Our query set should be received from raw sql!!!
-		sql_query = "SELECT course_id, units, name " + self._prepare_sql_query(query['query'])
-		print(sql_query)
-		return Course.objects.raw(sql_query)
+		# "SELECT course_id, units, name " + 
+		try:
+			sql_query = self._prepare_sql_query(query['query'])
+			print(sql_query)
+			return Course.objects.raw(sql_query)
+		except:
+			# sql_query = "SELECT * FROM scraper_course"
+			return Course.objects.raw("SELECT * FROM scraper_course")
+		
 
 
+	# Likely just going to let this through and assume the user inputs proper sql
 	def _prepare_sql_query(self, base_query):
 		# We have to replace all of these instances with "scraper_lowercaseversion"
-		regex_list = ['(?i)course[a-zA-Z|\\s]', '(?i)instructor[a-zA-Z|\\s]', 
-					  '(?i)department[a-zA-Z|\\s]', '(?i)school[a-zA-Z|\\s]', 
-					  '(?i)section[a-zA-Z|\\s]', '(?i)review[a-zA-Z|\\s]']
-		table_list = ['scraper_course', 'scraper_instructor', 'scraper_department', 
-					  'scraper_school', 'scraper_section', 'scraper_review']
+		# regex_list = ['(?i)course[a-zA-Z|\\s]', '(?i)instructor[a-zA-Z|\\s]', 
+		# 			  '(?i)department[a-zA-Z|\\s]', '(?i)school[a-zA-Z|\\s]', 
+		# 			  '(?i)section[a-zA-Z|\\s]', '(?i)review[a-zA-Z|\\s]']
+		# table_list = ['scraper_course ', 'scraper_instructor ', 'scraper_department ', 
+		# 			  'scraper_school ', 'scraper_section ', 'scraper_review ']
 
-		for i in range(len(regex_list)):
-			base_query = re.sub(regex_list[i], table_list[i], base_query)
+		# for i in range(len(regex_list)):
+		# 	base_query = re.sub(regex_list[i], table_list[i], base_query)
 
 		return base_query
 
+# class AdminCreateView()
