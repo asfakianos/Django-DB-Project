@@ -1,5 +1,7 @@
 # EECS 341 (Databases) Project
 
+Django-based web app with sqlalchemy  
+
 ## TODO
 - [ ] Pages for individual object views (`Instructor`, `Course`, `Profile`)
 - [ ] `Favorite` function for users
@@ -7,9 +9,6 @@
 - [ ] Patch up custom SQL queries
 - [ ] `Mod/Ins/Del` pages (stretch, they show up for admin views only for course)
 
-Django-based web app with sqlalchemy
-Our goal is to maintain a relational database with the following tables:
-Course(course_id, prereqs, dept, units, name), Instructor(name, dept), Department(name, address, school), School(name), and some sort of user model that is TBD.
 
 ## Publishing Guidelines
 

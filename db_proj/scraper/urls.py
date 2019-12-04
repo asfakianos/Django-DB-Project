@@ -9,4 +9,5 @@ urlpatterns = [
 	path('dept/', DepartmentView.as_view(), name='dept'),
 	path('instructor/', InstructorView.as_view(), name='instructor'),
 	path('customsearch/', CustomView.as_view(), name='custom_sql'),
+	path('submit_review/', submit_review, name='submit_review'),
 ]

@@ -1,25 +1,34 @@
 {% extends 'scraper/base.html' %}
-
+{% load static %}
 
 {% block title %}{{ course.course_id }} View{% endblock %}
 
+{% block head_content %}
+	<script src='{% static "scraper/js/AJAX_Submit.js" %}'></script>
+{% endblock %}
+
 {% block content %}
-<span class='md-0 h2'>{{ course.course_id }}-{{ course.name }}</span>
+	<div id='results' class='alert' role='alert'></div>
+	<span class='md-0 h2'>{{ course.course_id }}-{{ course.name }}</span>
+	{% if user.is_authenticated %}
+		<button id='fav_course' class='btn btn-primary'>Watch this Course</button>
+	{% endif %}
 
-{% if review_list %}
-	{% for review in review_list %}
-		<div class='card'>
-			{{ review.added_at }}
-			{{ review.description }}
-			}
-		</div>
-		{% endfor %}
-{% endif %}
+	{% if review_list %}
+		{% for review in review_list %}
+			<div class='card'>
+				{{ review.added_at }}
+				{{ review.description }}
+				}
+			</div>
+			{% endfor %}
+	{% endif %}
 
-<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
-<form id='review_form' style='width: 93%;'>
-	{{ form.as_p }}
-	<button type='submit' class='btn-lg btn-primary'>Submit Review</button>
-</form>
+	<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
+	<form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 93%;'>
+		{% csrf_token %}
+		<textarea id='review_text' class='form-control' form='review_form'></textarea>
+		<button type='submit' class='btn-lg btn-primary'>Submit Review</button>
+	</form>
 
 {% endblock %}

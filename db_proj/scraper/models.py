@@ -1,8 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
+# Saving our Profile everytime there is a new User created...
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+# ...Or if we modify a User object
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+
+# Validating credit hours (honestly this won't really come into play...)
 def validate_credit_hours(n):
 	# The only case I found where the hours are outside of this range are for EECS600 (1-18)
 	if n < 1 or n > 20:
@@ -11,10 +26,11 @@ def validate_credit_hours(n):
 			params={'value': n})
 
 
+
 DEFAULT_INST = 'DEFAULT'
 DEFAULT_DEPT = 'DEFAULT'
 DEFAULT_SCHL = 'DEFAULT'
-# DEFAULT_USER = '------'
+
 
 # We'll make models here, and have a separate module that populates dbs when necessary
 # Model for each item that we'd feature
@@ -84,7 +100,17 @@ class School(models.Model):
 # Extension of user model to build on favorites of classes, etc.
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	# https://docs.djangoproject.com/en/2.2/ref/models/relations/
 	watched_classes = models.ManyToManyField('Course')
+
+	def add_watch(self, course_id=None):
+		if course_pk:
+			try:
+				self.watched_classes.add(Course.objects.get(course_id=course_id))
+			except:
+				print("Invalid course_id given")
+		else:
+			print("No course_id specified")
 
 
 # A course can have one or multiple sections

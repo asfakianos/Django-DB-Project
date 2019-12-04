@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
 import re
+import json
 
 from .forms import *
 from .models import *
@@ -135,7 +136,7 @@ class InstructorView(ListView):
 # Render a form as well as class info.
 class CourseView(ListView, SingleObjectMixin):
 	template_name='scraper/course_view.html'
-	# form_class = CourseReviewForm
+	form_class = CourseReviewForm
 
 	def get_context_data(self, **kwargs):
 		# context = super(CourseView, self).get_context_data(**kwargs)
@@ -143,12 +144,10 @@ class CourseView(ListView, SingleObjectMixin):
 		context = {}
 		context['course'] = Course.objects.get(course_id=self.kwargs['slug'])
 		context['form'] = CourseReviewForm()
-		print(context)
 		return context
 
 
 	def get_queryset(self, **kwargs):
-		print("QUERY TIME")
 		return Review.objects.filter(course__course_id=Course.objects.get(course_id=self.kwargs['slug']).course_id)		
 
 
@@ -183,4 +182,11 @@ class CustomView(ListView):
 
 		return base_query
 
-# class AdminCreateView()
+def submit_review(request):
+	print(request)
+	review = request.POST.get('review_text')
+	return HttpResponse(
+		json.dumps({"review":review}),
+		content_type="application/json"
+		)
+

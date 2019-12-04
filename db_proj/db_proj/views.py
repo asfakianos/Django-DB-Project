@@ -7,14 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.edit import CreateView
 from django.contrib.auth import logout
 
-# class CreateUser(CreateView):
-# 	model = User
-# 	fields = '__all__'
-# 	template_name = 'scraper/form.html'
 
-# 	def form_valid(self, form):
-# 		self.object = form.save()
-# 		return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'), '/')
 def logout_redirect(request):
 	logout(request)
 	return HttpResponseRedirect('/')
