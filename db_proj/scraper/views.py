@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic.edit import CreateView, FormMixin
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.base import TemplateView
@@ -42,6 +42,10 @@ class SearchView(TemplateView):
 # to create a form that will add slugs based on what we want
 class CourseListView(ListView):
 	template_name = 'scraper/courses.html'
+
+	def post(self, request):
+		pass
+
 
 	def get_queryset(self):
 		query = self.request.GET
@@ -185,8 +189,7 @@ class CustomView(ListView):
 def submit_review(request):
 	print(request)
 	review = request.POST.get('review_text')
-	return HttpResponse(
-		json.dumps({"review":review}),
-		content_type="application/json"
-		)
+	print(review)
+	return JsonResponse({"review":review})
+
 

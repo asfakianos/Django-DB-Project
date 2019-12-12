@@ -4,7 +4,65 @@
 {% block title %}{{ course.course_id }} View{% endblock %}
 
 {% block head_content %}
-	<script src='{% static "scraper/js/AJAX_Submit.js" %}'></script>
+	<script>
+		
+		$(document).ready(function(){
+	$('#fav_course').on('submit', function(event){
+	    event.preventDefault();
+	    console.log("class watched.");
+	    add_fav();
+	});
+
+	$(document.getElementById('review_form')).submit(function(event){
+	    console.log('clicked')
+	    event.preventDefault();
+	    submit_review();
+	});
+});
+// Use #fav-form on buttons that are used to add courses to a watch list for Profiles
+
+
+
+// $('#review_form').submit(function(event){
+// 	event.preventDefault();
+// 	console.log("2");
+// 	$('#results').removeClass();
+// 	$('#results').hide();
+// 	submit_review();
+// });
+
+
+function add_fav() {
+	console.log("Added a course as a favorite...");
+	// console.log($('#review_text').val())
+	// https://realpython.com/django-and-ajax-form-submissions/
+	// Update main -> Get parent maybe??
+	// This will be easier for buttons that are on their unique Couse object page. 
+};
+
+function submit_review() {
+	console.log("Submitted review");
+	$.ajax({
+		url : "submit_review/",
+		type : "POST",
+		data : {review : $('#review_text').val() },
+
+		success : function(json) {
+			$('#review_text').val('');
+			// $('#results').html("Success! Form submitted.");
+			$('#results').addClass("alert alert-success");
+			$('#results').show();
+		},
+
+        error : function(xhr,errmsg,err) {
+            // $('#results').html("Something went wrong!");
+            $('#results').addClass("alert alert-danger");
+            $('#results').show();
+            console.log(xhr.status + ": " + xhr.responseText);
+		}
+	});
+};
+	</script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +83,8 @@
 	{% endif %}
 
 	<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
-	<form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 93%;'>
+	<!-- <form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 93%;'> -->
+	<form id='review_form' method='POST' action="/submit_review/" style='width: 93%;'>
 		{% csrf_token %}
 		<textarea id='review_text' class='form-control' form='review_form'></textarea>
 		<button type='submit' class='btn-lg btn-primary'>Submit Review</button>

@@ -123,6 +123,8 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# my_project/settings.py
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 # Might not use the login
 LOGIN_URL = 'login'
