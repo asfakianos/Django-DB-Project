@@ -74,21 +74,17 @@ class UserView(ListView):
 
 	def get_queryset(self):
 		query = self.request.GET
-
 		# Not ideal, but demonstrates the query exists
 		# We can handle a non-existent query set in the template view
-		if 'user_id' in query:
-			watched = Profile.objects.get(id=query['user_id'])
-			print(watched.watched_classes.all())
-			return watched.watched_classes.all()
+		if 'username' in query:
+			profile = Profile.objects.get(user__username__iexact=query['username'])
+			return profile.watched_classes.all()
 		
-	# Incase we need it...
+	# Not going to handle invalid users
 	def get_context_data(self, **kwargs):
 		query = self.request.GET
 		context = super().get_context_data(**kwargs)
-		context['user'] = Profile.objects.get(id=query['user_id']).user
-		# If we can't find the mentioned user, 404
-		# context['user'] = get_object_or_404(User, ..)
+		context['user'] = Profile.objects.get(user__username__iexact=query['username']).user
 		return context	
 
 
@@ -99,21 +95,11 @@ class DepartmentView(ListView):
 	# Add something to the slug to get all of the units in here
 	def get_queryset(self):
 		query = self.request.GET
-		# Get all courses in this dept or all courses not in this dept.
-		# ?in, ?not_in, or both -- NOT BOTH as we either get everything in a dept or everything not in a dept...the intersect is just the in
-		# if 'in' in query and 'not_in' in query:
-		# 	return 
-
 		if 'in' in query:
 			return Course.objects.filter(dept__name__icontains=query['in'])
 
 		elif 'not_in' in query:
 			return Course.objects.exclude(dept__name__icontains=query['not_in'])
-
-		# Note that nothing gets returned if we don't have anything in the GET request.
-		# If we want to get 
-
-			# return Department.objects.filter(name__icontains=query['dept'])
 
 
 class InstructorView(ListView):
