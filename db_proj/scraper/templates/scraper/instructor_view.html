@@ -10,7 +10,8 @@
 
 {% block content %}
 	<div class='d-flex flex-column justify-content-between' style='margin: 2vh 2vw 5vh 2vw;'>
-		<span class='md-0 h1' style='margin-bottom: 2vh;'>{{ instructor.name }}'s Courses</span>
+		<span class='md-0 h1' style='margin-bottom: 1vh;'>{{ instructor.name }}'s Courses</span>
+		<span class='md-0 h4' style='margin-bottom: 2vh;'>Rated {{ instructor.rating }} on ratemyprofessor</span>
 		{% if object_list %}
 			<div id='instructor_courses' class='d-flex flex-wrap align-content-around'>
 				{% for course in object_list %}
