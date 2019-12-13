@@ -3,11 +3,12 @@
 Django-based web app with sqlalchemy  
 
 ## TODO
-- [ ] Pages for individual object views (`Instructor`, `Course`, `Profile`)
-- [ ] `Favorite` function for users
-- [ ] Login view + user_auth 1:1 with `Profile`
+- [x] Pages for individual object views (`Instructor`, `Course`, `Profile`)
+- [x] `Favorite` function for users
+- [x] Login view + user_auth 1:1 with `Profile`
 - [ ] Patch up custom SQL queries
-- [ ] `Mod/Ins/Del` pages (stretch, they show up for admin views only for course)
+- [x] `Mod/Ins/Del` pages (stretch, they show up for admin views only for course)
+- [x] Anchor objects to pages on the `courses` view
 
 
 ## Publishing Guidelines
