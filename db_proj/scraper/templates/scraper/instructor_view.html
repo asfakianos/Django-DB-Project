@@ -1,24 +1,37 @@
 {% extends 'scraper/base.html' %}
 
-{% if class_list %}
-
-	{% block title %}{{ instructor.name }}'s Courses{% endblock %}
-
-	{% block content %}
-		{% for class in class_list %}
-		<div>
-			{{ class.name }}
-		</div>
-		{% endfor %}
+	{% block title %}
+		{% if instructor.name %}
+			{{ instructor.name }}'s Courses
+		{% else %}
+			Instructor not found
+		{% endif %}
 	{% endblock %}
 
-{% else %}
-	{% block title %}Instructor not found{% endblock %}
+{% block content %}
+	<div class='d-flex flex-column justify-content-between' style='margin: 2vh 2vw 5vh 2vw;'>
+		<span class='md-0 h1' style='margin-bottom: 2vh;'>{{ instructor.name }}'s Courses</span>
+		{% if object_list %}
+			<div id='instructor_courses' class='d-flex flex-wrap align-content-around'>
+				{% for course in object_list %}
+					<div class='card text-white bg-dark mb-3' style='width: 30vw; margin: 1vh 1vw 1vh 1vw'>
+					  <div class="card-header" style='height: 5vh; overflow: hidden;'>{{ course.name }}</div>
+					  <div class="card-body" style='height: 20vh; overflow: scroll;'>
+					    <h5 class="card-title">Taught by {{ course.instructor.name }}</h5>
+					    <p class="card-text">
+					    	{{ course.course_id }} - {{ course.units }} credit hours<br>
+					    	<a href="{% url 'course_page' slug=course.course_id %}">Link</a>
+					    </p>
+					  </div>
+					</div>
+				{% endfor %}
+			</div>
 
-	{% block content %}
-	<div>
-		This instructor couldn't be found. Either you spelled the name incorrectly, or that instructor hasn't been added yet.
+		{% else %}
+			<span class='md-0 h3'>
+				This instructor's courses couldn't be found. Either you spelled the name incorrectly, or that instructor hasn't been added yet.
+			</span>
+		{% endif %}
 	</div>
-	{% endblock %}
+{% endblock %}
 
-{% endif %}

@@ -106,38 +106,40 @@ class InstructorView(ListView):
 	template_name = 'scraper/instructor_view.html'
 
 	# Do similar thing to Dept.View
-	def get_queryset(self):
+	def get_context_data(self, **kwargs):
 		query = self.request.GET
 		context = super().get_context_data(**kwargs)
 
 		# Expected; ?prof=PROFESSOR
 		try:
 			if 'prof' in query:
-				context['instructor'] = Instructor.objects.get(name__icontains=query['prof'])
+				context['instructor'] = Instructor.objects.get(name__iexact=query['prof'])
 
 			# Equivalent of ?id=ID
 			elif 'id' in query:
-				context['instructor'] = Instructor.objects.get(case_id=query['id'])
+				context['instructor'] = Instructor.objects.get(case_id__iexact=query['id'])
 
-		except Instructor.DoesNotExist:
+		except:
 			pass
 
 		return context
 
-	def get_context_data(self, **kwargs):
+
+	def get_queryset(self):
 		query = self.request.GET
 		try:
 			if 'prof' in query:
-				instructor = Instructor.objects.get(name__icontains=query['prof'])
+				instructor = Instructor.objects.get(name__iexact=query['prof'])
 
 			# Equivalent of ?id=ID
 			elif 'id' in query:
-				instructor = Instructor.objects.get(case_id=query['id'])
+				instructor = Instructor.objects.get(case_id__iexact=query['id'])
 
-			
+			return Course.objects.filter(instructor=instructor)
 
 		except Instructor.DoesNotExist:
 			pass
+
 
 
 # Form for writing/submitting reviews
