@@ -1,7 +1,7 @@
 # EECS 341 (Databases) Project
 
 ## TODO
-- [ ] Pages for individual object views (`Instructor`, `Course`, `Profile`)
+- [x] Pages for individual object views (`Instructor`, `Course`, `Profile`)
 - [x] `Favorite` function for users
 - [x] Login view + user_auth 1:1 with `Profile`
 - [ ] Patch up custom SQL queries
