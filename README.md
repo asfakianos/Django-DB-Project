@@ -2,11 +2,13 @@
 
 Django-based web app with sqlalchemy  
 
+Note that `debug=True` as I ran into some issues with static/admin files in the admin view. This also results in 404/500 views appearing quite often as SQL queries and GET requests in URLS (?id=9) are extremely fragile and must be exact (not case sensitive)
+
 ## TODO
 - [x] Pages for individual object views (`Instructor`, `Course`, `Profile`)
 - [x] `Favorite` function for users
 - [x] Login view + user_auth 1:1 with `Profile`
-- [ ] Patch up custom SQL queries
+- [x] Patch up custom SQL queries
 - [x] `Mod/Ins/Del` pages (stretch, they show up for admin views only for course)
 - [x] Anchor objects to pages on the `courses` view
 
