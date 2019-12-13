@@ -1,25 +1,50 @@
 {% extends 'scraper/base.html' %}
-
+{% load static %}
 
 {% block title %}{{ course.course_id }} View{% endblock %}
 
+{% block head_content %}
+  <script src='{% static "scraper/js/csrf.js" %}'></script>
+	<script src='{% static "scraper/js/ajax_submit.js" %}'></script>
+	<script src='{% static "scraper/js/watch_course.js" %}'></script>
+{% endblock %}
+
 {% block content %}
-<span class='md-0 h2'>{{ course.course_id }}-{{ course.name }}</span>
+	<div id='results' class='alert' role='alert' style='margin: 1vh 1vw 4vh 1vw; width: 98vw;'></div>
+	<div class='d-flex flex-column justify-content-between' style='margin: 0 2vw 5vh 2vw;'>
+		<span class='md-0 h2'>{{ course.course_id }}: {{ course.name }}</span>
+		<br><span class='md-0 h3' style='width: 98vw; margin: -2vh 0 2vh 0'>Taught by <a href='{% url "instructor" %}?id={{course.instructor.case_id}}'>{{ course.instructor.name }}</a></span>
+		{% if user.is_authenticated %}
+			<form id='watch_course' method='POST' action="{% url 'watch_course' %}">
+				{% csrf_token %}
+				<input type='hidden' id='user_id_to_js' name='user_id' value="{{user.username}}">
+				<button id='fav_course' class='btn btn-primary'>Watch this Course</button>
+			</form>
+		{% endif %}
 
-{% if review_list %}
-	{% for review in review_list %}
-		<div class='card'>
-			{{ review.added_at }}
-			{{ review.description }}
-			}
-		</div>
-		{% endfor %}
-{% endif %}
+	</div>
 
-<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
-<form id='review_form' style='width: 93%;'>
-	{{ form.as_p }}
-	<button type='submit' class='btn-lg btn-primary'>Submit Review</button>
-</form>
+	<hr style='margin: 2vh 2vw 2vh 2vw; width: 96vw;'>
+	<span class='md-0 h4' style='margin: 2vh 2vw 0 2vw;'>Reviews</span>
+	<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
+	<!-- <form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 93%;'> -->
+	<form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 80%; margin: 10vh 10vw 5vw 10vh'>
+		{% csrf_token %}
+		<textarea id='review_text' class='form-control' form='review_form' placeholder="Write something..." style='height: 20vh;'></textarea>
+		<button type='submit' class='btn-lg btn-primary' style='width: 15vw;'>Submit Review</button>
+	</form>
+
+	{% if review_list %}
+		{% for review in review_list %}
+			<div id='reviews' class='d-flex flex-wrap align-content-around'>
+				<div class='card text-white bg-dark mb-3' style='width: 60vw; margin: 1vh 20vw 1vh 20vw'>
+					<div class="card-header" style='height: 5vh; overflow: hidden;'>Submitted at {{ review.added_at }}</div>
+					<div class="card-body" style='height: 20vh; overflow: scroll;'>
+						<p class="card-text">{{ review.description }}</p>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+	{% endif %}
 
 {% endblock %}

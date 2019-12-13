@@ -3,13 +3,14 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic.edit import CreateView, FormMixin
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
 import re
+import json
 
 from .forms import *
 from .models import *
@@ -42,6 +43,10 @@ class SearchView(TemplateView):
 class CourseListView(ListView):
 	template_name = 'scraper/courses.html'
 
+	def post(self, request):
+		pass
+
+
 	def get_queryset(self):
 		query = self.request.GET
 		# Expected values to return:
@@ -64,25 +69,22 @@ class CourseListView(ListView):
 							)
 
 
-# TOADD:
-# Time conflict notification on course watch list
 class UserView(ListView):
-	# TODO
-	template_name = 'scraper/base.html'
+	template_name = 'scraper/user_view.html'
 
 	def get_queryset(self):
 		query = self.request.GET
-
 		# Not ideal, but demonstrates the query exists
 		# We can handle a non-existent query set in the template view
-		if 'user_id' in query:
-			return Profile.objects.get(id=query['user_id'])
+		if 'username' in query:
+			profile = Profile.objects.get(user__username__iexact=query['username'])
+			return profile.watched_classes.all()
 		
-	# Incase we need it...
+	# Not going to handle invalid users
 	def get_context_data(self, **kwargs):
+		query = self.request.GET
 		context = super().get_context_data(**kwargs)
-		# If we can't find the mentioned user, 404
-		# context['user'] = get_object_or_404(User, ..)
+		context['user'] = Profile.objects.get(user__username__iexact=query['username']).user
 		return context	
 
 
@@ -93,62 +95,75 @@ class DepartmentView(ListView):
 	# Add something to the slug to get all of the units in here
 	def get_queryset(self):
 		query = self.request.GET
-		# Get all courses in this dept or all courses not in this dept.
-		# ?in, ?not_in, or both -- NOT BOTH as we either get everything in a dept or everything not in a dept...the intersect is just the in
-		# if 'in' in query and 'not_in' in query:
-		# 	return 
-
 		if 'in' in query:
 			return Course.objects.filter(dept__name__icontains=query['in'])
 
 		elif 'not_in' in query:
 			return Course.objects.exclude(dept__name__icontains=query['not_in'])
 
-		# Note that nothing gets returned if we don't have anything in the GET request.
-		# If we want to get 
-
-			# return Department.objects.filter(name__icontains=query['dept'])
-
 
 class InstructorView(ListView):
-	# TODO
-	template_name = 'scraper/base.html'
+	template_name = 'scraper/instructor_view.html'
 
 	# Do similar thing to Dept.View
-	def get_queryset(self):
+	def get_context_data(self, **kwargs):
 		query = self.request.GET
+		context = super().get_context_data(**kwargs)
 
 		# Expected; ?prof=PROFESSOR
 		try:
 			if 'prof' in query:
-				return Instructor.objects.get(name__icontains=query['prof'])
+				context['instructor'] = Instructor.objects.get(name__iexact=query['prof'])
 
 			# Equivalent of ?id=ID
 			elif 'id' in query:
-				return Instructor.objects.get(case_id=query['id'])
+				context['instructor'] = Instructor.objects.get(case_id__iexact=query['id'])
+
+		except:
+			pass
+
+		return context
+
+
+	def get_queryset(self):
+		query = self.request.GET
+		try:
+			if 'prof' in query:
+				instructor = Instructor.objects.get(name__iexact=query['prof'])
+
+			# Equivalent of ?id=ID
+			elif 'id' in query:
+				instructor = Instructor.objects.get(case_id__iexact=query['id'])
+
+			return Course.objects.filter(instructor=instructor)
 
 		except Instructor.DoesNotExist:
 			pass
+
 
 
 # Form for writing/submitting reviews
 # Render a form as well as class info.
 class CourseView(ListView, SingleObjectMixin):
 	template_name='scraper/course_view.html'
-	# form_class = CourseReviewForm
+	form_class = CourseReviewForm
+
 
 	def get_context_data(self, **kwargs):
-		# context = super(CourseView, self).get_context_data(**kwargs)
-		 # Use this to find specific course and pass to context
+		# I couldn't get request to work, and this is basically all I wanted
+		path_re = re.compile('[\\w]+$')
+		course_id = path_re.findall(self.request.path)[0]
+		reviews = Review.objects.filter(course__course_id__icontains=course_id)
+
+		# Add neccessary stuff to our context
 		context = {}
 		context['course'] = Course.objects.get(course_id=self.kwargs['slug'])
 		context['form'] = CourseReviewForm()
-		print(context)
+		context['review_list'] = reviews
 		return context
 
 
 	def get_queryset(self, **kwargs):
-		print("QUERY TIME")
 		return Review.objects.filter(course__course_id=Course.objects.get(course_id=self.kwargs['slug']).course_id)		
 
 
@@ -157,30 +172,41 @@ class CustomView(ListView):
 
 	def get_queryset(self):
 		query = self.request.GET
-		# Our query set should be received from raw sql!!!
-		# "SELECT course_id, units, name " + 
 		try:
 			sql_query = self._prepare_sql_query(query['query'])
 			print(sql_query)
 			return Course.objects.raw(sql_query)
 		except:
-			# sql_query = "SELECT * FROM scraper_course"
 			return Course.objects.raw("SELECT * FROM scraper_course")
 		
 
 
 	# Likely just going to let this through and assume the user inputs proper sql
 	def _prepare_sql_query(self, base_query):
-		# We have to replace all of these instances with "scraper_lowercaseversion"
-		# regex_list = ['(?i)course[a-zA-Z|\\s]', '(?i)instructor[a-zA-Z|\\s]', 
-		# 			  '(?i)department[a-zA-Z|\\s]', '(?i)school[a-zA-Z|\\s]', 
-		# 			  '(?i)section[a-zA-Z|\\s]', '(?i)review[a-zA-Z|\\s]']
-		# table_list = ['scraper_course ', 'scraper_instructor ', 'scraper_department ', 
-		# 			  'scraper_school ', 'scraper_section ', 'scraper_review ']
-
-		# for i in range(len(regex_list)):
-		# 	base_query = re.sub(regex_list[i], table_list[i], base_query)
 
 		return base_query
 
-# class AdminCreateView()
+
+def submit_review(request):
+	review = request.POST.get('review')
+	course_id = request.POST.get('course')
+	new_review = Review.objects.create(description=review, 
+								course=Course.objects.get(course_id__icontains=course_id))
+
+	new_review.save()
+	return JsonResponse({"review":new_review.description})
+
+
+def watch_course(request):
+	username = request.POST.get('username')
+	course_id = request.POST.get('course')
+
+	profile = Profile.objects.filter(user__username__icontains=username)[0]
+	if Course.objects.get(course_id__iexact=course_id) in profile.watched_classes.all():
+		return JsonResponse({"status":"duplicate"})
+
+	profile.watched_classes.add(Course.objects.get(course_id__iexact=course_id))
+	profile.save()
+
+	return JsonResponse({"status":"OK"})
+

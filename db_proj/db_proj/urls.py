@@ -8,12 +8,14 @@ from django.conf import settings
 from . import views
 
 
-# template_name='scraper/login.html'
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('login/', views.login_user, name='login'),
     path('', include('scraper.urls')),
 	path('logout/', views.logout_redirect, name='logout'),
 ]
+
+# handler404 = "db_proj.views.handler404"
+# handler500 = "db_proj.views.handler500"
 
 

@@ -15,7 +15,10 @@
 				  <div class="card-header" style='height: 5vh; overflow: hidden;'>{{ course.name }}</div>
 				  <div class="card-body" style='height: 20vh; overflow: scroll;'>
 				    <h5 class="card-title">Taught by {{ course.instructor.name }}</h5>
-				    <p class="card-text">{{ course.course_id }} - {{ course.units }} credit hours</p>
+				    <p class="card-text">
+				    	{{ course.course_id }} - {{ course.units }} credit hours<br>
+				    	<a href="{% url 'course_page' slug=course.course_id %}">Link</a>
+				    </p>
 				  </div>
 				</div>
 			{% endfor %}

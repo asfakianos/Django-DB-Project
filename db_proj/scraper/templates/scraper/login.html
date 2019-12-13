@@ -1,7 +1,45 @@
-<form method="POST">
-	{% csrf_token %}
-	{{ form }}
+{% extends "scraper/base.html" %}
 
-	<input type='hidden' name='next' value='{{ request.path }}'>
-	<button type='submit'>Sign up</button>
-</form>
+{% block title %}Login{% endblock %}
+
+{% block login %}
+	<button class='btn btn-outline-info' disabled>Already on login page</button>
+{% endblock %}
+
+{% block content %}
+	<div class='jumbotron' style="height: 100vh; margin-bottom: 0px;">
+		<div class='d-flex justify-content-around' style='margin: 15vh 2.5vw 0vh 2.5vw;'>
+			<!-- Actual login -->
+			<div style='display: inline-block; width: 40vw;'>
+				<span class='mb-0 h5 text-info' style='width: fill;'>Login</span>
+				<form class='form-group' method="POST">
+					{% csrf_token %}
+					<div class='form-row' style='padding-bottom: 1vh;'>
+						<input type='text' name='username'  class='form-control form-control-md' placeholder="Username">
+					</div>
+					<div class='form-row' style='padding-bottom: 1vh;'>
+						<input type='password' name='password' class='form-control form-control-md' placeholder="Password">
+					</div>
+					<button class='btn btn-info' type='submit'>Log in</button>
+				</form>
+			</div>
+			<!-- Create user -->
+			<div style='display: inline-block; width: 40vw;'>
+				<span class='mb-0 h5 text-info' style='width: fill;'>New User</span>
+				<form class='form-group' method='POST'>
+					{% csrf_token %}
+					<div class='form-row' style='padding-bottom: 1vh;'>
+						<input type='text' name='username' class='form-control form-control-md' placeholder="Username">
+					</div>
+					<div class='form-row' style='padding-bottom: 1vh;'>
+						<input type='password' name='password' class='form-control form-control-md' placeholder="Password">
+					</div>
+					<div class='form-row' style='padding-bottom: 1vh;'>
+						<input type='password' name='confirm_password' class='form-control form-control-md' placeholder="Confirm Password">
+					</div>
+					<button class='btn btn-info' type='submit'>Create Account</button>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

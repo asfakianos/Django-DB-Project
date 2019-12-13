@@ -1,0 +1,26 @@
+{% extends 'scraper/base.html' %}
+{% load static %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block head_content %}{% endblock %}
+
+{% block content %}
+	<span class='md-0 h2'>{{ user.username }}'s watched courses:</span>
+
+	{% if object_list %}
+		{% for course in object_list %}
+			<div class='card text-white bg-dark mb-3' style='width: 30vw; margin: 1vh 1vw 1vh 1vw'>
+			  <div class="card-header" style='height: 5vh; overflow: hidden;'>{{ course.name }}</div>
+			  <div class="card-body" style='height: 20vh; overflow: scroll;'>
+			    <h5 class="card-title">Taught by {{ course.instructor.name }}</h5>
+			    <p class="card-text">
+			    	{{ course.course_id }} - {{ course.units }} credit hours
+			    	<a href="{% url 'course_page' slug=course.course_id %}">Link</a>
+			    </p>
+			  </div>
+			</div>
+		{% endfor %}
+	{% endif %}
+
+{% endblock %}
