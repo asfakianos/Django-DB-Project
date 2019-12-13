@@ -69,11 +69,8 @@ class CourseListView(ListView):
 							)
 
 
-# TOADD:
-# Time conflict notification on course watch list
 class UserView(ListView):
-	# TODO
-	template_name = 'scraper/base.html'
+	template_name = 'scraper/user_view.html'
 
 	def get_queryset(self):
 		query = self.request.GET
@@ -81,11 +78,15 @@ class UserView(ListView):
 		# Not ideal, but demonstrates the query exists
 		# We can handle a non-existent query set in the template view
 		if 'user_id' in query:
-			return Profile.objects.get(id=query['user_id'])
+			watched = Profile.objects.get(id=query['user_id'])
+			print(watched.watched_classes.all())
+			return watched.watched_classes.all()
 		
 	# Incase we need it...
 	def get_context_data(self, **kwargs):
+		query = self.request.GET
 		context = super().get_context_data(**kwargs)
+		context['user'] = Profile.objects.get(id=query['user_id']).user
 		# If we can't find the mentioned user, 404
 		# context['user'] = get_object_or_404(User, ..)
 		return context	
@@ -142,12 +143,18 @@ class CourseView(ListView, SingleObjectMixin):
 	template_name='scraper/course_view.html'
 	form_class = CourseReviewForm
 
+
 	def get_context_data(self, **kwargs):
-		# context = super(CourseView, self).get_context_data(**kwargs)
-		 # Use this to find specific course and pass to context
+		# I couldn't get request to work, and this is basically all I wanted
+		path_re = re.compile('[\\w]+$')
+		course_id = path_re.findall(self.request.path)[0]
+		reviews = Review.objects.filter(course__course_id__icontains=course_id)
+
+		# Add neccessary stuff to our context
 		context = {}
 		context['course'] = Course.objects.get(course_id=self.kwargs['slug'])
 		context['form'] = CourseReviewForm()
+		context['review_list'] = reviews
 		return context
 
 
@@ -174,22 +181,28 @@ class CustomView(ListView):
 
 	# Likely just going to let this through and assume the user inputs proper sql
 	def _prepare_sql_query(self, base_query):
-		# We have to replace all of these instances with "scraper_lowercaseversion"
-		# regex_list = ['(?i)course[a-zA-Z|\\s]', '(?i)instructor[a-zA-Z|\\s]', 
-		# 			  '(?i)department[a-zA-Z|\\s]', '(?i)school[a-zA-Z|\\s]', 
-		# 			  '(?i)section[a-zA-Z|\\s]', '(?i)review[a-zA-Z|\\s]']
-		# table_list = ['scraper_course ', 'scraper_instructor ', 'scraper_department ', 
-		# 			  'scraper_school ', 'scraper_section ', 'scraper_review ']
-
-		# for i in range(len(regex_list)):
-		# 	base_query = re.sub(regex_list[i], table_list[i], base_query)
 
 		return base_query
 
-def submit_review(request):
-	print(request)
-	review = request.POST.get('review_text')
-	print(review)
-	return JsonResponse({"review":review})
 
+def submit_review(request):
+	review = request.POST.get('review')
+	course_id = request.POST.get('course')
+	new_review = Review.objects.create(description=review, 
+								course=Course.objects.get(course_id__icontains=course_id))
+
+	new_review.save()
+	return JsonResponse({"review":new_review.description})
+
+
+def watch_course(request):
+	print(request.POST)
+	username = request.POST.get('username')
+	course_id = request.POST.get('course')
+
+	profile = Profile.objects.filter(user__username__icontains=username)[0]
+	profile.watched_classes.add(Course.objects.get(course_id__iexact=course_id))
+	profile.save()
+
+	return JsonResponse({"saved":"OK"})
 

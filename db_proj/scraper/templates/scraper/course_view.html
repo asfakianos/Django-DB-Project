@@ -4,90 +4,45 @@
 {% block title %}{{ course.course_id }} View{% endblock %}
 
 {% block head_content %}
-	<script>
-		
-		$(document).ready(function(){
-	$('#fav_course').on('submit', function(event){
-	    event.preventDefault();
-	    console.log("class watched.");
-	    add_fav();
-	});
-
-	$(document.getElementById('review_form')).submit(function(event){
-	    console.log('clicked')
-	    event.preventDefault();
-	    submit_review();
-	});
-});
-// Use #fav-form on buttons that are used to add courses to a watch list for Profiles
-
-
-
-// $('#review_form').submit(function(event){
-// 	event.preventDefault();
-// 	console.log("2");
-// 	$('#results').removeClass();
-// 	$('#results').hide();
-// 	submit_review();
-// });
-
-
-function add_fav() {
-	console.log("Added a course as a favorite...");
-	// console.log($('#review_text').val())
-	// https://realpython.com/django-and-ajax-form-submissions/
-	// Update main -> Get parent maybe??
-	// This will be easier for buttons that are on their unique Couse object page. 
-};
-
-function submit_review() {
-	console.log("Submitted review");
-	$.ajax({
-		url : "submit_review/",
-		type : "POST",
-		data : {review : $('#review_text').val() },
-
-		success : function(json) {
-			$('#review_text').val('');
-			// $('#results').html("Success! Form submitted.");
-			$('#results').addClass("alert alert-success");
-			$('#results').show();
-		},
-
-        error : function(xhr,errmsg,err) {
-            // $('#results').html("Something went wrong!");
-            $('#results').addClass("alert alert-danger");
-            $('#results').show();
-            console.log(xhr.status + ": " + xhr.responseText);
-		}
-	});
-};
-	</script>
+  <script src='{% static "scraper/js/csrf.js" %}'></script>
+	<script src='{% static "scraper/js/ajax_submit.js" %}'></script>
+	<script src='{% static "scraper/js/watch_course.js" %}'></script>
 {% endblock %}
 
 {% block content %}
 	<div id='results' class='alert' role='alert'></div>
-	<span class='md-0 h2'>{{ course.course_id }}-{{ course.name }}</span>
-	{% if user.is_authenticated %}
-		<button id='fav_course' class='btn btn-primary'>Watch this Course</button>
-	{% endif %}
+	<div class='d-flex justify-content-between' style='margin: 0 2vw 5vh 2vw;'>
+		<span class='md-0 h2'>{{ course.course_id }}-{{ course.name }}</span>
+		{% if user.is_authenticated %}
+			<form id='watch_course' method='POST' action="{% url 'watch_course' %}">
+				{% csrf_token %}
+				<input type='hidden' id='user_id_to_js' name='user_id' value="{{user.username}}">
+				<button id='fav_course' class='btn btn-primary'>Watch this Course</button>
+			</form>
+		{% endif %}
+	</div>
+
+	<hr style='margin: 2vh 2vw 2vh 2vw; width: 96vw;'>
+	<span class='md-0 h4' style='margin: 2vh 2vw 0 2vw;'>Reviews</span>
+	<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
+	<!-- <form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 93%;'> -->
+	<form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 80%; margin: 10vh 10vw 5vw 10vh'>
+		{% csrf_token %}
+		<textarea id='review_text' class='form-control' form='review_form' placeholder="Write something..." style='height: 20vh;'></textarea>
+		<button type='submit' class='btn-lg btn-primary' style='width: 15vw;'>Submit Review</button>
+	</form>
 
 	{% if review_list %}
 		{% for review in review_list %}
-			<div class='card'>
-				{{ review.added_at }}
-				{{ review.description }}
-				}
+			<div id='reviews' class='d-flex flex-wrap align-content-around'>
+				<div class='card text-white bg-dark mb-3' style='width: 60vw; margin: 1vh 20vw 1vh 20vw'>
+					<div class="card-header" style='height: 5vh; overflow: hidden;'>Submitted at {{ review.added_at }}</div>
+					<div class="card-body" style='height: 20vh; overflow: scroll;'>
+						<p class="card-text">{{ review.description }}</p>
+					</div>
+				</div>
 			</div>
 			{% endfor %}
 	{% endif %}
-
-	<!-- Going to be writing some AJAX to handle this so we don't have to refresh the page on the client side to submit. -->
-	<!-- <form id='review_form' method='POST' action="{% url 'submit_review' %}" style='width: 93%;'> -->
-	<form id='review_form' method='POST' action="/submit_review/" style='width: 93%;'>
-		{% csrf_token %}
-		<textarea id='review_text' class='form-control' form='review_form'></textarea>
-		<button type='submit' class='btn-lg btn-primary'>Submit Review</button>
-	</form>
 
 {% endblock %}

@@ -101,7 +101,7 @@ class School(models.Model):
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	# https://docs.djangoproject.com/en/2.2/ref/models/relations/
-	watched_classes = models.ManyToManyField('Course')
+	watched_classes = models.ManyToManyField('Course', blank=True, related_name='watched_courses')
 
 	def add_watch(self, course_id=None):
 		if course_pk:

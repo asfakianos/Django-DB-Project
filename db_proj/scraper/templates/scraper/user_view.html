@@ -1,0 +1,20 @@
+{% extends 'scraper/base.html' %}
+{% load static %}
+
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block head_content %}{% endblock %}
+
+{% block content %}
+	<span class='md-0 h2'>{{ user.username }}'s watched courses:</span>
+
+	{% if object_list %}
+		{% for course in object_list %}
+			<div class='card text-white bg-dark mb-3'>
+				{{ course.course_id }} - {{ course.name }}
+				<a href="{% url 'course_page' slug=course.course_id %}">Click me!</a>
+			</div>
+			{% endfor %}
+	{% endif %}
+
+{% endblock %}
