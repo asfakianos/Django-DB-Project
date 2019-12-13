@@ -103,21 +103,38 @@ class DepartmentView(ListView):
 
 
 class InstructorView(ListView):
-	# TODO
-	template_name = 'scraper/base.html'
+	template_name = 'scraper/instructor_view.html'
 
 	# Do similar thing to Dept.View
 	def get_queryset(self):
 		query = self.request.GET
+		context = super().get_context_data(**kwargs)
 
 		# Expected; ?prof=PROFESSOR
 		try:
 			if 'prof' in query:
-				return Instructor.objects.get(name__icontains=query['prof'])
+				context['instructor'] = Instructor.objects.get(name__icontains=query['prof'])
 
 			# Equivalent of ?id=ID
 			elif 'id' in query:
-				return Instructor.objects.get(case_id=query['id'])
+				context['instructor'] = Instructor.objects.get(case_id=query['id'])
+
+		except Instructor.DoesNotExist:
+			pass
+
+		return context
+
+	def get_context_data(self, **kwargs):
+		query = self.request.GET
+		try:
+			if 'prof' in query:
+				instructor = Instructor.objects.get(name__icontains=query['prof'])
+
+			# Equivalent of ?id=ID
+			elif 'id' in query:
+				instructor = Instructor.objects.get(case_id=query['id'])
+
+			
 
 		except Instructor.DoesNotExist:
 			pass
@@ -153,14 +170,11 @@ class CustomView(ListView):
 
 	def get_queryset(self):
 		query = self.request.GET
-		# Our query set should be received from raw sql!!!
-		# "SELECT course_id, units, name " + 
 		try:
 			sql_query = self._prepare_sql_query(query['query'])
 			print(sql_query)
 			return Course.objects.raw(sql_query)
 		except:
-			# sql_query = "SELECT * FROM scraper_course"
 			return Course.objects.raw("SELECT * FROM scraper_course")
 		
 
@@ -182,13 +196,15 @@ def submit_review(request):
 
 
 def watch_course(request):
-	print(request.POST)
 	username = request.POST.get('username')
 	course_id = request.POST.get('course')
 
 	profile = Profile.objects.filter(user__username__icontains=username)[0]
+	if Course.objects.get(course_id__iexact=course_id) in profile.watched_classes.all():
+		return JsonResponse({"status":"duplicate"})
+
 	profile.watched_classes.add(Course.objects.get(course_id__iexact=course_id))
 	profile.save()
 
-	return JsonResponse({"saved":"OK"})
+	return JsonResponse({"status":"OK"})
 

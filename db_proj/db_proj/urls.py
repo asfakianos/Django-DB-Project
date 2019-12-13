@@ -15,4 +15,7 @@ urlpatterns = [
 	path('logout/', views.logout_redirect, name='logout'),
 ]
 
+# handler404 = "db_proj.views.handler404"
+# handler500 = "db_proj.views.handler500"
+
 

@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-	<div id='results' class='alert' role='alert'></div>
+	<div id='results' class='alert' role='alert' style='margin: 1vh 1vw 4vh 1vw; width: 98vw;'></div>
 	<div class='d-flex justify-content-between' style='margin: 0 2vw 5vh 2vw;'>
 		<span class='md-0 h2'>{{ course.course_id }}-{{ course.name }}</span>
 		{% if user.is_authenticated %}

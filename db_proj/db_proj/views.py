@@ -60,3 +60,16 @@ def login_user(request):
 				return HttpResponseRedirect('/')
 	return render(request, 'scraper/login.html', context)
 
+
+def handler404(request, *args, **argv):
+	context = {}
+	# response = render(request, 'scraper/error.html', {})
+	# response.status_code = 404
+	return render(request, 'scraper/error.html', {})
+
+
+def handler500(request, *args, **argv):
+	context = {}
+	# response = render(request, 'scraper/error.html', {})
+	# response.status_code = 500
+	return render(request, 'scraper/error.html', {})

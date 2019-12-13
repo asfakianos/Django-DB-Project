@@ -2,7 +2,7 @@
 
 {% if class_list %}
 
-	{% block title %}'s Courses{% endblock %}
+	{% block title %}{{ instructor.name }}'s Courses{% endblock %}
 
 	{% block content %}
 		{% for class in class_list %}

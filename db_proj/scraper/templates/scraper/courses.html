@@ -16,7 +16,7 @@
 				  <div class="card-body" style='height: 20vh; overflow: scroll;'>
 				    <h5 class="card-title">Taught by {{ course.instructor.name }}</h5>
 				    <p class="card-text">
-				    	{{ course.course_id }} - {{ course.units }} credit hours
+				    	{{ course.course_id }} - {{ course.units }} credit hours<br>
 				    	<a href="{% url 'course_page' slug=course.course_id %}">Link</a>
 				    </p>
 				  </div>
