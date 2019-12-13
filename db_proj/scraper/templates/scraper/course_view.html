@@ -13,7 +13,7 @@
 	<div id='results' class='alert' role='alert' style='margin: 1vh 1vw 4vh 1vw; width: 98vw;'></div>
 	<div class='d-flex flex-column justify-content-between' style='margin: 0 2vw 5vh 2vw;'>
 		<span class='md-0 h2'>{{ course.course_id }}: {{ course.name }}</span>
-		<br><span class='md-0 h3' style='width: 98vw; margin: -2vh 0 2vh 0'>Taught by <a href='{% url "instructor" %}?id={{course.instructor.case_id}}'>{{ course.instructor.name }}</a></span>
+		<br><span class='md-0 h3' style='width: 98vw; margin: -2vh 0 2vh 0;'>Taught by <a href='{% url "instructor" %}?id={{course.instructor.case_id}}'>{{ course.instructor.name }}</a></span>
 		{% if user.is_authenticated %}
 			<form id='watch_course' method='POST' action="{% url 'watch_course' %}">
 				{% csrf_token %}

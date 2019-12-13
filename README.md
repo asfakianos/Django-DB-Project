@@ -34,3 +34,15 @@ If what you push to **your** branch is working on your end, make a pull request 
 
 Django is pretty easy to use, but has some confusing architecture to get started with. If you want to see a quick tutorial of how to navigate through Django, use this [link](https://docs.djangoproject.com/en/2.2/intro/tutorial01/) to quickstart your own app. We're working mainly in the /scraper/ directory. You can also just run our current app with `python manage.py runserver` which will run a server by default at localhost:8000. We also have a requirements.txt in the base directory, which you can install with pip: `pip install -r requirements.txt`.
 
+## Quick Start
+Requires python3.* to run.
+
+* Clone the repository
+* `pip install -r requirements.txt` to install required packages
+* Navigate to the repo_destination/db_proj/ directory
+* Run the server with `./manage.py runserver` (May need to adjust user permissions and/or header path for executing like this)
+  * Alternatively, run `./manage.py dbshell` to directly access the sqlite3 DBMS (note that table names are of the form scraper_<NAME> rather than just <NAME> as a way to manage multiple apps). 
+* Navigate to [http://localhost:8000/](http://localhost:8000/) to start searching the database
+* Navigate to [http://localhost:8000/admin/](http://localhost:8000/admin/) to manage objects as an administrator (for insert/modify/delete)
+
+
