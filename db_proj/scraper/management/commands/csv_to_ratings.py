@@ -18,10 +18,9 @@ class Command(BaseCommand):
 
 		prof_to_rating = dict(zip(list(csv['instructor']), list(csv['rating'])))
 		for name in prof_to_rating:
-			print(name, prof_to_rating[name])
 			try: 
 				for target in i.filter(name__iexact=name):
-					target.rating = prof_to_rating[name]
+					target.rating = str(prof_to_rating[name])
 					target.save()
 			except:
 				pass
