@@ -65,7 +65,7 @@ class Instructor(models.Model):
 		default=DEFAULT_DEPT,
 		on_delete=models.SET_DEFAULT
 	)
-	rating = models.DecimalField(default=5.0, max_digits=3, decimal_places=2)
+	rating = models.CharField(default="5.0", max_length=4)
 
 	def __str__(self):
 		return f"{self.case_id} {self.name} from {self.dept.name}"

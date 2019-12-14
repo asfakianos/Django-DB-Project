@@ -7,17 +7,21 @@ from django.db import transaction
 import pandas as pd
 
 # Specify this path from the db_proj directory (where manage.py is located)
-FILE_PATH="scraper/data/________"
+FILE_PATH="scraper/data/prof_with_meeting_times.csv"
 
 class Command(BaseCommand):
 	help = """Takes a csv from FILE_PATH and modifies all instructors in the list to match the review given"""
 
 	def handle(self, *kwargs, **options):
 		i = Instructor.objects.all()
-		ratings = pd.read_csv(FILE_PATH)
+		csv = pd.read_csv(FILE_PATH)
 
-		for index, row in ratings.interrows():
-			target = i.get(name__iexact=row['name'])
-			target.rating = row['rating']
-			target.save()
+		prof_to_rating = dict(zip(list(csv['instructor']), list(csv['rating'])))
+		for name in prof_to_rating:
+			try: 
+				for target in i.filter(name__iexact=name):
+					target.rating = str(prof_to_rating[name])
+					target.save()
+			except:
+				pass
 
