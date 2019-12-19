@@ -174,8 +174,6 @@ class CustomView(ListView):
 		query = self.request.GET
 		try:
 			sql_query = self._prepare_sql_query(query['query'])
-			print(sql_query)
-			print(Course.objects.raw(sql_query))
 			return Course.objects.raw(sql_query)
 		except:
 			return Course.objects.raw("SELECT * FROM scraper_course")

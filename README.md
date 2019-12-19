@@ -11,6 +11,9 @@ Note that `debug=True` as I ran into some issues with static/admin files in the 
 - [x] Patch up custom SQL queries
 - [x] `Mod/Ins/Del` pages (stretch, they show up for admin views only for course)
 - [x] Anchor objects to pages on the `courses` view
+- [ ] Expand to using generic styles/templates for most views
+- [ ] Allow more query ranges -- Don't limit to just Course in the RAWSQL 
+- [ ] In-page filters
 
 
 ## Publishing Guidelines
